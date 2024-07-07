@@ -1,0 +1,61 @@
+let
+
+    -- logical
+    true = \x y. x;
+    false = \x y. y;
+    not = \b. b false true;
+    if = \b e1 e2. b e1 e2; -- if A B C => if A then B else C
+    and = \b1 b2. if b1 b2 false;
+    or = \b1 b2. if b1 true b2;
+
+    -- numbers example
+    zero = \f x. x; -- pode-se usar 0 por praticidade
+    um = \f x. f x; -- 1
+    dois = \f x. f (f x); -- 2
+
+    -- pairs
+    pair = \a b. \c. c a b;
+    fst = \p. p true;
+    snd = \p. p false;
+    swap = \p. pair (snd p) (fst p);
+
+    succ = \n. \A B. A (n A B);
+    shiftInc = \p. pair (snd p) (succ (snd p));
+    pred = \n. fst (n shiftInc (pair 0 0)); -- (pred n) calcula n-1 se n>0, n se n=0
+
+    -- arithmetical operators
+    add = \n1 n2. n1 succ n2;
+    add2 = \n1 n2. \A B. n1 A (n2 A B);
+    mult = \n1 n2. n1 (\x. add n2 x) 0;
+    mult2 = \m n. \p q. m (n p) q;
+    sub = \a b. b pred a; -- (sub a b) calcula a - b
+
+    -- tests and comparisons
+    isZero = \n. n (\x. false) true;
+    isPositive = \n. not (isZero n);
+    isLessThan = \a b. isPositive (sub b a); -- (isLessThan a b) testa a < b
+
+    -- lists
+    empty = \x. true;
+    cons = pair;
+    isEmpty = \l. l (\a b. false);
+    head = fst;
+    tail = snd;
+
+    -- recursions
+    Y = \f. (\x. f (x x)) (\x. f (x x));
+    S_fat = \R. \n. if (isZero n)
+                    1
+                    (mult2 n (R (pred n)));
+    S_len = \R. \l. if (isEmpty l)
+                    0
+                    (succ (R (tail l)));
+    S_sum = \R. \l. if (isEmpty l)
+                    0
+                    (add (head l) (R (tail l)));
+    fat = Y S_fat; -- fatorial
+    len = Y S_len; -- comprimento de lista
+    sum = Y S_sum; -- somatorio de elementos da lista
+
+in
+    len (cons 1 (cons 4 (cons 2 (cons 3 empty))))
