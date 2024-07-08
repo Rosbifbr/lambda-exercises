@@ -35,6 +35,11 @@ let
     isPositive = \n. not (isZero n);
     isLessThan = \a b. isPositive (sub b a); -- (isLessThan a b) testa a < b
 
+    --beware of the inexistance of negative numerals. thats why we test both options
+    isEqual = \a b. and (isZero(sub b a)) (isZero(sub a b));
+
+    igual = isEqual; --question A
+
     -- lists
     empty = \x. true;
     cons = pair;
