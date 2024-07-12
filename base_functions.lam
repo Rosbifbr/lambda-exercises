@@ -38,8 +38,6 @@ let
     --beware of the inexistance of negative numerals. thats why we test both options
     isEqual = \a b. and (isZero(sub b a)) (isZero(sub a b));
 
-    igual = isEqual; --question A
-
     -- lists
     empty = \x. true;
     cons = pair;
@@ -65,13 +63,17 @@ let
     --recursive integer division
     S_div = \F a b. if (isLessThan a b)
                 0 -- base
-                (succ (F (sub a b) b)); -- remove a from B and recurse
+                (succ (F (sub a b) b)); -- add 1 to the result sub a from b and recurse
     div = Y S_div; -- divisao inteira
 
     --recursive integer division (but we count the rest)
     S_mod = \F a b. if (isLessThan a b)
                 a -- base
-                (F (sub a b) b); -- remove a from B and recurse
+                (F (sub a b) b); -- remove a from B and recurse result is to be the simple rest
     mod = Y S_mod; -- resto da divisao inteira
+
+    --portuguese names for trabalhation spec (impar names)
+    igual = isEqual; --question A
+    multTres = \n. if (isZero (mod n 3)) true false --question C
 in
     div 3 2
