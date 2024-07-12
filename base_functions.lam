@@ -62,5 +62,16 @@ let
     len = Y S_len; -- comprimento de lista
     sum = Y S_sum; -- somatorio de elementos da lista
 
+    --recursive integer division
+    S_div = \F a b. if (isLessThan a b)
+                0 -- base
+                (succ (F (sub a b) b)); -- remove a from B and recurse
+    div = Y S_div; -- divisao inteira
+
+    --recursive integer division (but we count the rest)
+    S_mod = \F a b. if (isLessThan a b)
+                a -- base
+                (F (sub a b) b); -- remove a from B and recurse
+    mod = Y S_mod; -- resto da divisao inteira
 in
-    len (cons 1 (cons 4 (cons 2 (cons 3 empty))))
+    div 3 2
