@@ -1,0 +1,98 @@
+let
+
+    -- logical
+    true = \x y. x;
+    false = \x y. y;
+    not = \b. b false true;
+    if = \b e1 e2. b e1 e2; -- if A B C => if A then B else C
+    and = \b1 b2. if b1 b2 false;
+    or = \b1 b2. if b1 true b2;
+
+    -- numbers example
+    zero = \f x. x; -- pode-se usar 0 por praticidade
+    um = \f x. f x; -- 1
+    dois = \f x. f (f x); -- 2
+
+    -- pairs
+    pair = \a b. \c. c a b;
+    fst = \p. p true;
+    snd = \p. p false;
+    swap = \p. pair (snd p) (fst p);
+
+    succ = \n. \A B. A (n A B);
+    shiftInc = \p. pair (snd p) (succ (snd p));
+    pred = \n. fst (n shiftInc (pair 0 0)); -- (pred n) calcula n-1 se n>0, n se n=0
+
+    -- arithmetical operators
+    add = \n1 n2. n1 succ n2;
+    add2 = \n1 n2. \A B. n1 A (n2 A B);
+    mult = \n1 n2. n1 (\x. add n2 x) 0;
+    mult2 = \m n. \p q. m (n p) q;
+    sub = \a b. b pred a; -- (sub a b) calcula a - b
+
+    -- tests and comparisons
+    isZero = \n. n (\x. false) true;
+    isPositive = \n. not (isZero n);
+    isLessThan = \a b. isPositive (sub b a); -- (isLessThan a b) testa a < b
+
+    -- lists
+    empty = \x. true;
+    cons = pair;
+    isEmpty = \l. l (\a b. false);
+    head = fst;
+    tail = snd;
+
+    -- recursions
+    Y = \f. (\x. f (x x)) (\x. f (x x));
+    S_fat = \R. \n. if (isZero n)
+                    1
+                    (mult2 n (R (pred n)));
+    S_len = \R. \l. if (isEmpty l)
+                    0
+                    (succ (R (tail l)));
+    S_sum = \R. \l. if (isEmpty l)
+                    0
+                    (add (head l) (R (tail l)));
+    S_div_quotient = \R. \dividend divisor. if (isLessThan dividend divisor)
+                    0
+                    (add 1 (R (sub dividend divisor) divisor));
+    S_div_remainder = \R. \dividend divisor. if (isLessThan dividend divisor)
+                    dividend
+                    (R (sub dividend divisor) divisor);
+    fat = Y S_fat; -- fatorial
+    len = Y S_len; -- comprimento de lista
+    sum = Y S_sum; -- somatorio de elementos da lista
+
+    -- quociente da divisao de A por B: div_quotient A B
+    div_quotient = Y S_div_quotient;
+    -- resto da divisao de A por B: div_remainder A B
+    div_remainder = Y S_div_remainder;
+
+
+    -------------------- QUESTOES --------------------
+
+    -- questao (b) pol a b = a^2 + 3b
+    pol = \a b. add (mult2 a a) (mult2 3 b);
+
+    -- questao (d) multFrac (a, b) (c, d) = (ac, bd)
+    multFrac = \pair_ab pair_cd. pair (mult2 (fst pair_ab) (fst pair_cd))
+                                      (mult2 (snd pair_ab) (snd pair_cd));
+
+    -- questao (f) geraLista n
+    S_geraLista = \R. \n. if (isZero n) empty (cons n (R (pred n)));
+    geraLista = Y S_geraLista;
+
+    -- questao (h) seq n
+    S_seq = \R. \n. if (isZero n)
+                       2
+                       (if (isLessThan n 2)
+                           (5)
+                           (sub
+                               (mult2 3 (R (sub n 1)))
+                               (mult2 2 (R (sub n 2)))
+                           )
+                       );
+    seq = Y S_seq;
+
+in
+    seq 0
