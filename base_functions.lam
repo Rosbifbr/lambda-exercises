@@ -75,5 +75,15 @@ let
     --portuguese names for trabalhation spec (impar names)
     igual = isEqual; --question A
     multTres = \n. if (isZero (mod n 3)) true false --question C
+
+    --arguments in tuples
+    --somaFrac (a,b) (c,d) = (a*d + b*c, b*d)
+    somaFrac = \p1 p2. (
+        cons (
+            (add
+                (mul a d)
+                (mul b c))
+            (cons
+                (mul b d))))
 in
     div 3 2
