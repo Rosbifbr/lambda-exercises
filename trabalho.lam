@@ -167,8 +167,22 @@ let
                        );
     seq = Y S_seq;
 
+    --question multLista l (also known as produtorio)
+    S_multLista = \F l. if (isEmpty l)
+                    1
+                    (mult2
+                        (head l)
+                        (F (tail l)));
+    multLista = Y S_multLista;
+
+    --somaFrac = (a,b) (c,d) => a*d + b*c , b*d
+    somaFrac = \pair_ab pair_cd. pair
+                    (add
+                        (mult2 (fst pair_ab) (snd pair_cd))
+                        (mult2 (snd pair_ab) (fst pair_cd)))
+                    (mult2 (snd pair_ab) (snd pair_cd)); --question e (put here becasue interpreter goes awry when this goes in the end for some reason lol)
+
     igual = isEqual; --question A implemented in english then translate
     multTres = \n. if (isZero (mod n 3)) true false --question C
-
 in
-    div 3 2
+    somaFrac (pair 2 2) (pair 2 2)
