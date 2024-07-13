@@ -169,11 +169,16 @@ let
 
     --question multLista l (also known as produtorio)
     S_multLista = \F l. if (isEmpty l)
-                    1
+                    1 --recursion base always return one for mult to work
                     (mult2
                         (head l)
                         (F (tail l)));
-    multLista = Y S_multLista;
+    _multLista = Y S_multLista;
+
+    --recursion wrapper
+    multLista = \l. if (isEmpty l)
+                    0
+                    _multLista l;
 
     --somaFrac = (a,b) (c,d) => a*d + b*c , b*d
     somaFrac = \pair_ab pair_cd. pair
@@ -185,4 +190,5 @@ let
     igual = isEqual; --question A implemented in english then translate
     multTres = \n. if (isZero (mod n 3)) true false --question C
 in
-    somaFrac (pair 2 2) (pair 2 2)
+    --should yield 9
+    multLista (cons 1 (cons 2 (cons 3 empty)))
